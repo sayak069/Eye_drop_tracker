@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>Eye Drop Tracker</title>
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, sans-serif;
+    }
+
+    body{
+      background:#eef3f9;
+      min-height:100vh;
+      padding:30px;
+    }
+
+    /* =========================
+       DESKTOP UI
+    ========================== */
+
+    .container{
+
+      width:100%;
+      max-width:1000px;
+
+      margin:auto;
+
+      background:white;
+
+      border-radius:24px;
+
+      padding:35px;
+
+      box-shadow:
+      0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    h1{
+
+      text-align:center;
+
+      color:#1d3557;
+
+      font-size:42px;
+
+      margin-bottom:12px;
+    }
+
+    .info{
+
+      text-align:center;
+
+      color:#666;
+
+      line-height:1.7;
+
+      font-size:16px;
+
+      margin-bottom:35px;
+    }
+
+    /* INPUT SECTION */
+
+    .top-section{
+
+      display:flex;
+
+      gap:15px;
+
+      align-items:center;
+
+      margin-bottom:20px;
+
+      flex-wrap:wrap;
+    }
+
+    .top-section input{
+
+      flex:2;
+    }
+
+    .top-section select{
+
+      flex:1;
+    }
+
+    .top-section button{
+
+      flex:1;
+    }
+
+    input,
+    select,
+    button{
+
+      border:none;
+
+      outline:none;
+
+      border-radius:14px;
+
+      font-size:16px;
+    }
+
+    input,
+    select{
+
+      background:#f5f7fb;
+
+      border:2px solid transparent;
+
+      padding:16px;
+
+      transition:0.2s;
+    }
+
+    input:focus,
+    select:focus{
+
+      border-color:#1e88e5;
+
+      background:white;
+    }
+
+    button{
+
+      padding:16px;
+
+      color:white;
+
+      font-weight:bold;
+
+      cursor:pointer;
+
+      transition:0.2s;
+    }
+
+    .add-btn{
+
+      background:#1e88e5;
+    }
+
+    .add-btn:hover{
+
+      background:#1565c0;
+    }
+
+    .reset-btn{
+
+      background:#ef5350;
+    }
+
+    .reset-btn:hover{
+
+      background:#d32f2f;
+    }
+
+    .remove-all-btn{
+
+      background:#7b1fa2;
+
+      width:100%;
+
+      margin-bottom:30px;
+    }
+
+    .remove-all-btn:hover{
+
+      background:#6a1b9a;
+    }
+
+    /* ENTRY GRID */
+
+    #entriesContainer{
+
+      display:grid;
+
+      grid-template-columns:
+      repeat(auto-fit, minmax(320px, 1fr));
+
+      gap:20px;
+    }
+
+    .entry{
+
+      background:#fafcff;
+
+      border:1px solid #e5edf5;
+
+      border-radius:18px;
+
+      padding:22px;
+    }
+
+    .entry-header{
+
+      display:flex;
+
+      justify-content:space-between;
+
+      align-items:center;
+
+      gap:10px;
+
+      margin-bottom:10px;
+    }
+
+    .entry h3{
+
+      color:#1d3557;
+
+      font-size:22px;
+    }
+
+    .entry p{
+
+      color:#555;
+
+      margin-bottom:18px;
+
+      font-size:15px;
+    }
+
+    /* ACTION BUTTONS */
+
+    .action-buttons{
+
+      display:flex;
+
+      gap:10px;
+
+      flex-wrap:wrap;
+    }
+
+    .edit-btn{
+
+      background:#43a047;
+
+      padding:10px 14px;
+
+      border-radius:10px;
+
+      font-size:14px;
+    }
+
+    .edit-btn:hover{
+
+      background:#2e7d32;
+    }
+
+    .remove-btn{
+
+      background:#ff5252;
+
+      padding:10px 14px;
+
+      border-radius:10px;
+
+      font-size:14px;
+    }
+
+    .remove-btn:hover{
+
+      background:#e53935;
+    }
+
+    /* CHECKBOXES */
+
+    .checkboxes{
+
+      display:grid;
+
+      grid-template-columns:repeat(2, 1fr);
+
+      gap:12px;
+    }
+
+    .checkbox-item{
+
+      background:#edf5ff;
+
+      border-radius:14px;
+
+      padding:12px;
+
+      display:flex;
+
+      align-items:center;
+
+      gap:10px;
+
+      font-size:15px;
+
+      color:#333;
+    }
+
+    .checkbox-item input{
+
+      width:18px;
+      height:18px;
+
+      accent-color:#1e88e5;
+    }
+
+    .small{
+
+      margin-top:16px;
+
+      color:#777;
+
+      font-size:13px;
+
+      text-align:center;
+    }
+
+    .empty{
+
+      text-align:center;
+
+      color:#777;
+
+      padding:20px;
+    }
+
+    /* =========================
+       MOBILE UI
+    ========================== */
+
+    @media (max-width:600px){
+
+      body{
+
+        padding:12px;
+      }
+
+      .container{
+
+        max-width:500px;
+
+        padding:18px;
+
+        border-radius:18px;
+      }
+
+      h1{
+
+        font-size:28px;
+      }
+
+      .info{
+
+        font-size:14px;
+
+        margin-bottom:25px;
+      }
+
+      .top-section{
+
+        flex-direction:column;
+
+        gap:14px;
+      }
+
+      input,
+      select,
+      button{
+
+        width:100%;
+
+        font-size:15px;
+      }
+
+      input,
+      select{
+
+        padding:15px;
+      }
+
+      button{
+
+        padding:15px;
+      }
+
+      #entriesContainer{
+
+        display:block;
+      }
+
+      .entry{
+
+        margin-bottom:18px;
+
+        padding:18px;
+      }
+
+      .entry h3{
+
+        font-size:18px;
+      }
+
+      .entry-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+      }
+
+      .action-buttons{
+
+        width:100%;
+      }
+
+      .edit-btn,
+      .remove-btn{
+
+        flex:1;
+      }
+
+      .checkboxes{
+
+        grid-template-columns:1fr;
+      }
+
+      .checkbox-item{
+
+        padding:14px;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>Eye Drop Tracker</h1>
+
+    <div class="info">
+
+      Track your daily eye drops easily.<br>
+
+      Checkboxes reset automatically every day at 12:00 AM while your eye drop details stay saved.
+
+    </div>
+
+    <!-- INPUT SECTION -->
+
+    <div class="top-section">
+
+      <input
+        type="text"
+        id="eyeDropName"
+        placeholder="Enter Eye Drop Name"
+      >
+
+      <select id="dropCount">
+
+        <option value="">
+          Select Number of Drops
+        </option>
+
+      </select>
+
+      <button
+        class="add-btn"
+        onclick="addEntry()"
+      >
+        Add Eye Drop
+      </button>
+
+      <button
+        class="reset-btn"
+        onclick="resetAllCheckboxes()"
+      >
+        Reset Checkboxes
+      </button>
+
+    </div>
+
+    <!-- REMOVE ALL -->
+
+    <button
+      class="remove-all-btn"
+      onclick="removeAllEyeDrops()"
+    >
+      Remove All Eye Drops
+    </button>
+
+    <!-- ENTRIES -->
+
+    <div id="entriesContainer"></div>
+
+  </div>
+
+  <script>
+
+    // DROPDOWN 1-10
+
+    const dropSelect =
+      document.getElementById("dropCount");
+
+    for(let i = 1; i <= 10; i++){
+
+      const option =
+        document.createElement("option");
+
+      option.value = i;
+
+      option.textContent = i;
+
+      dropSelect.appendChild(option);
+    }
+
+    // LOAD SAVED DATA
+
+    let entries =
+      JSON.parse(
+        localStorage.getItem("eyeDropEntries")
+      ) || [];
+
+    // DAILY RESET
+
+    function resetCheckboxesIfNeeded(){
+
+      const today =
+        new Date().toDateString();
+
+      const lastReset =
+        localStorage.getItem("lastResetDate");
+
+      if(lastReset !== today){
+
+        entries.forEach(entry => {
+
+          entry.checked =
+            Array(entry.numberOfDrops)
+            .fill(false);
+
+        });
+
+        localStorage.setItem(
+          "eyeDropEntries",
+          JSON.stringify(entries)
+        );
+
+        localStorage.setItem(
+          "lastResetDate",
+          today
+        );
+      }
+    }
+
+    // SAVE DATA
+
+    function saveData(){
+
+      localStorage.setItem(
+        "eyeDropEntries",
+        JSON.stringify(entries)
+      );
+    }
+
+    // ADD ENTRY
+
+    function addEntry(){
+
+      const name =
+        document.getElementById("eyeDropName")
+        .value
+        .trim();
+
+      const numberOfDrops =
+        parseInt(
+          document.getElementById("dropCount")
+          .value
+        );
+
+      if(!name){
+
+        alert("Please enter eye drop name");
+
+        return;
+      }
+
+      if(!numberOfDrops){
+
+        alert("Please select number of drops");
+
+        return;
+      }
+
+      const entry = {
+
+        id: Date.now(),
+
+        name: name,
+
+        numberOfDrops: numberOfDrops,
+
+        checked:
+          Array(numberOfDrops)
+          .fill(false)
+      };
+
+      entries.push(entry);
+
+      saveData();
+
+      renderEntries();
+
+      document.getElementById(
+        "eyeDropName"
+      ).value = "";
+
+      document.getElementById(
+        "dropCount"
+      ).value = "";
+    }
+
+    // TOGGLE CHECKBOX
+
+    function toggleCheckbox(
+      entryId,
+      checkboxIndex
+    ){
+
+      entries = entries.map(entry => {
+
+        if(entry.id === entryId){
+
+          entry.checked[checkboxIndex] =
+            !entry.checked[checkboxIndex];
+        }
+
+        return entry;
+      });
+
+      saveData();
+    }
+
+    // RESET ALL CHECKBOXES
+
+    function resetAllCheckboxes(){
+
+      const confirmReset =
+        confirm("Reset all checkboxes?");
+
+      if(!confirmReset){
+        return;
+      }
+
+      entries.forEach(entry => {
+
+        entry.checked =
+          Array(entry.numberOfDrops)
+          .fill(false);
+
+      });
+
+      saveData();
+
+      renderEntries();
+    }
+
+// UPDATE NUMBER OF DROPS ONLY
+
+function editEntry(entryId){
+
+  const entry =
+    entries.find(
+      entry => entry.id === entryId
+    );
+
+  if(!entry){
+    return;
+  }
+
+  const newDropCount =
+    prompt(
+      "Update Number of Drops (1-10)",
+      entry.numberOfDrops
+    );
+
+  if(newDropCount === null){
+    return;
+  }
+
+  const parsedDrops =
+    parseInt(newDropCount);
+
+  if(
+    isNaN(parsedDrops) ||
+    parsedDrops < 1 ||
+    parsedDrops > 10
+  ){
+
+    alert(
+      "Number of drops must be between 1 and 10"
+    );
+
+    return;
+  }
+
+  // UPDATE DROP COUNT
+
+  entry.numberOfDrops = parsedDrops;
+
+  // RESET CHECKBOXES
+
+  entry.checked =
+    Array(parsedDrops).fill(false);
+
+  saveData();
+
+  renderEntries();
+}
+
+    // REMOVE SINGLE ENTRY
+
+    function removeEntry(entryId){
+
+      const confirmDelete =
+        confirm("Remove this eye drop?");
+
+      if(!confirmDelete){
+        return;
+      }
+
+      entries =
+        entries.filter(
+          entry => entry.id !== entryId
+        );
+
+      saveData();
+
+      renderEntries();
+    }
+
+    // REMOVE ALL ENTRIES
+
+    function removeAllEyeDrops(){
+
+      if(entries.length === 0){
+
+        alert("No eye drops to remove.");
+
+        return;
+      }
+
+      const confirmDelete =
+        confirm(
+          "Remove ALL eye drops?"
+        );
+
+      if(!confirmDelete){
+        return;
+      }
+
+      entries = [];
+
+      saveData();
+
+      renderEntries();
+    }
+
+    // RENDER ENTRIES
+
+    function renderEntries(){
+
+      const container =
+        document.getElementById(
+          "entriesContainer"
+        );
+
+      container.innerHTML = "";
+
+      if(entries.length === 0){
+
+        container.innerHTML = `
+          <div class="empty">
+            No eye drops added yet.
+          </div>
+        `;
+
+        return;
+      }
+
+      entries.forEach((entry, index) => {
+
+        const div =
+          document.createElement("div");
+
+        div.className = "entry";
+
+        let checkboxHTML = "";
+
+        for(
+          let i = 0;
+          i < entry.numberOfDrops;
+          i++
+        ){
+
+          checkboxHTML += `
+
+            <label class="checkbox-item">
+
+              <input
+                type="checkbox"
+
+                ${entry.checked[i]
+                  ? "checked"
+                  : ""}
+
+                onchange="
+                  toggleCheckbox(
+                    ${entry.id},
+                    ${i}
+                  )
+                "
+              >
+
+              Drop ${i + 1}
+
+            </label>
+          `;
+        }
+
+        div.innerHTML = `
+
+          <div class="entry-header">
+
+            <h3>
+
+              Eye Drop #${index + 1}
+
+            </h3>
+
+            <div class="action-buttons">
+
+              <button
+                class="edit-btn"
+                onclick="editEntry(${entry.id})"
+              >
+                Update
+              </button>
+
+              <button
+                class="remove-btn"
+                onclick="removeEntry(${entry.id})"
+              >
+                Remove
+              </button>
+
+            </div>
+
+          </div>
+
+          <p>
+
+            <strong>${entry.name}</strong>
+            •
+            ${entry.numberOfDrops} drops
+
+          </p>
+
+          <div class="checkboxes">
+
+            ${checkboxHTML}
+
+          </div>
+
+          <div class="small">
+
+            Auto resets daily at 12:00 AM
+
+          </div>
+
+        `;
+
+        container.appendChild(div);
+
+      });
+
+    }
+
+    // INITIALIZE
+
+    resetCheckboxesIfNeeded();
+
+    renderEntries();
+
+  </script>
+
+</body>
+</html>
